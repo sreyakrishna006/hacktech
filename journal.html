@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Journal</title>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            font-family:'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .journal-container{
+            background:white;
+            width:90%;
+            max-width:600px;
+            padding:30px;
+            border-radius:20px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.2);
+            text-align:center;
+            position:relative;
+        }
+
+        h2{
+            margin-bottom:10px;
+            color:#d63384;
+        }
+
+        .date-input{
+            margin-bottom:20px;
+        }
+
+        input[type="date"]{
+            padding:8px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        }
+
+        /* Ruled paper effect */
+        textarea{
+            width:100%;
+            height:250px;
+            padding:15px;
+            border:none;
+            resize:none;
+            outline:none;
+            font-size:16px;
+            line-height:28px;
+            background-image: 
+                linear-gradient(to bottom, transparent 27px, #e0e0e0 28px);
+            background-size: 100% 28px;
+            transition: all 0.3s;
+        }
+
+        .buttons{
+            margin-top:20px;
+        }
+
+        button{
+            padding:10px 20px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+            margin:0 10px;
+            transition: 0.3s;
+        }
+
+        .save-btn{
+            background:#28a745;
+            color:white;
+        }
+
+        .burn-btn{
+            background:#dc3545;
+            color:white;
+        }
+
+        button:hover{
+            opacity:0.85;
+        }
+
+        /* Burn animation */
+        .burn-effect{
+            animation: fadeOut 1.5s forwards;
+        }
+
+        @keyframes fadeOut{
+            0% { opacity:1; transform:scale(1); }
+            100% { opacity:0; transform:scale(0.8); }
+        }
+
+        /* Inline message styles just below buttons */
+        #message {
+            font-size: 17px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            min-height: 28px;
+            display: inline-block;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message-success {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .message-error {
+            color: #721c24;
+            background-color: #f8d7da;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="journal-container" id="journalBox">
+
+    <h2>My Safe Space 📓</h2>
+
+    <div class="date-input">
+        <input type="date" id="entryDate">
+    </div>
+
+    <textarea id="journalText" placeholder="Write your thoughts here..."></textarea>
+
+    <div class="buttons">
+        <button class="save-btn" onclick="saveEntry()">Save It 💾</button>
+        <button class="burn-btn" onclick="burnEntry()">Burn It 🔥</button>
+    </div>
+
+    <!-- Inline message just below buttons -->
+    <div id="message"></div>
+
+</div>
+
+<script>
+    // Show inline messages
+    function showMessage(text, type) {
+        let messageDiv = document.getElementById("message");
+        messageDiv.textContent = text;
+        messageDiv.className = type === "success" ? "message-success" : "message-error";
+        messageDiv.style.opacity = 1;
+
+        setTimeout(() => {
+            messageDiv.style.opacity = 0;
+        }, 2500);
+    }
+
+    // Save journal entry privately
+    function saveEntry(){
+        let date = document.getElementById("entryDate").value;
+        let text = document.getElementById("journalText").value;
+
+        if(!date || !text){
+            showMessage("Please add date and write something first.", "error");
+            return;
+        }
+
+        let entry = { date: date, content: text };
+        // Save privately in localStorage, but never display
+        let savedEntries = JSON.parse(localStorage.getItem("journalEntries")) || [];
+        savedEntries.push(entry);
+        localStorage.setItem("journalEntries", JSON.stringify(savedEntries));
+
+        showMessage("Saved successfully 💖", "success");
+
+        document.getElementById("journalText").value = "";
+        document.getElementById("entryDate").value = "";
+    }
+
+    // Burn current entry
+    function burnEntry(){
+        let text = document.getElementById("journalText").value;
+
+        if(!text){
+            showMessage("Nothing to burn 🔥", "error");
+            return;
+        }
+
+        let confirmBurn = window.confirm("Are you sure you want to burn this entry? This cannot be undone.");
+
+        if(confirmBurn){
+            let box = document.getElementById("journalBox");
+            box.classList.add("burn-effect");
+
+            setTimeout(function(){
+                document.getElementById("journalText").value = "";
+                box.classList.remove("burn-effect");
+                showMessage("Entry burned 🔥", "success");
+            },1500);
+        }
+    }
+
+</script>
+
+</body>
+</html>

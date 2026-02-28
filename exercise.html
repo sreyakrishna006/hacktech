@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Support 💬</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #ffeaf4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 550px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #ff85b3;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: #ffb6d9;
+            color: black;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: #f1f1f1;
+        }
+
+        .chat-input {
+            padding: 10px;
+            display: flex;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            background: #ff85b3;
+            color: white;
+            cursor: pointer;
+        }
+
+        .typing {
+            font-style: italic;
+            font-size: 12px;
+            color: gray;
+            margin-bottom: 10px;
+        }
+
+        .back-button {
+            background: white;
+            color: #ff85b3;
+            border: 1px solid #fff;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #ffb6d9;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        YOUR BUDDY 💗
+        <button class="back-button" onclick="goBack()">go to self care hub</button>
+    </div>
+
+    <div class="chat-messages" id="messages">
+        <div class="message bot">Hi love 💕 I'm here for you. Tell me how you're feeling.</div>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type your feelings...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+// Random listening responses
+const listeningResponses = [
+    "I hear you 💗, please continue...",
+    "That sounds important. Tell me more ❤️",
+    "I'm with you 💕, keep sharing your thoughts.",
+    "I understand 💖, how does that make you feel?",
+    "You're being heard 💗, I'm listening carefully.",
+    "Go on, I'm paying attention 💕."
+];
+
+function sendMessage() {
+    let input = document.getElementById("userInput");
+    let messageText = input.value.trim();
+    if (messageText === "") return;
+
+    let messages = document.getElementById("messages");
+
+    // User message
+    let userMessage = document.createElement("div");
+    userMessage.className = "message user";
+    userMessage.innerText = messageText;
+    messages.appendChild(userMessage);
+
+    input.value = "";
+    messages.scrollTop = messages.scrollHeight;
+
+    // Typing effect
+    let typing = document.createElement("div");
+    typing.className = "typing";
+    typing.innerText = "AI is typing...";
+    messages.appendChild(typing);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Bot reply after 2 seconds
+    setTimeout(() => {
+        typing.remove();
+
+        let botMessage = document.createElement("div");
+        botMessage.className = "message bot";
+
+        // Simple emotional replies
+        if (messageText.toLowerCase().includes("sad")) {
+            botMessage.innerText = "I'm really sorry you're feeling sad 💔 Want to talk about it?";
+        } 
+        else if (messageText.toLowerCase().includes("happy")) {
+            botMessage.innerText = "That makes me so happy to hear!! 🥰 Tell me what made your day!";
+        } 
+        else if (messageText.toLowerCase().includes("hi") || messageText.toLowerCase().includes("hello") || messageText.toLowerCase().includes("hey") || messageText.toLowerCase().includes("good morning") || messageText.toLowerCase().includes("good evening")) {
+            botMessage.innerText = "hey love how was your dayyyyy??";}
+        else {
+            // Pick random listening response
+            let randomIndex = Math.floor(Math.random() * listeningResponses.length);
+            botMessage.innerText = listeningResponses[randomIndex];
+        }
+
+        messages.appendChild(botMessage);
+        messages.scrollTop = messages.scrollHeight;
+
+    }, 2000);
+}
+
+// Enter key support
+document.getElementById("userInput")
+.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
+// Back button functionality
+function goBack() {
+    window.location.href = "common.html";
+}
+
+</script>
+
+</body>
+</html>

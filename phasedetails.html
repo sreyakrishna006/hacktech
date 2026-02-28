@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cycle Phase</title>
+
+<style>
+
+/* ===== BODY ===== */
+body{
+    font-family: 'Segoe UI', sans-serif;
+    margin:0;
+    padding:0;
+    background: linear-gradient(to right, #ffdde1, #ee9ca7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* ===== CARD ===== */
+.card{
+    background:white;
+    width:500px;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.15);
+    text-align:center;
+}
+
+/* ===== HEADINGS ===== */
+h1{
+    color:#d63384;
+    margin-bottom:10px;
+}
+
+.phase{
+    font-size:22px;
+    font-weight:bold;
+    margin:10px 0;
+    color:#c2185b;
+}
+
+.day{
+    font-size:18px;
+    margin-bottom:15px;
+    color:#555;
+}
+
+.description{
+    margin-top:15px;
+    line-height:1.6;
+    color:#444;
+}
+
+.advice{
+    margin-top:20px;
+    padding:15px;
+    background:#fff0f5;
+    border-radius:10px;
+    color:#880e4f;
+    font-weight:500;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn{
+    margin-top:25px;
+    padding:12px 25px;
+    border-radius:15px;
+    border:none;
+    background:#ff6ea8;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#d63384;
+    transform: scale(1.05);
+}
+
+</style>
+</head>
+
+<body onload="calculatePhase()">
+
+<div class="card">
+
+<h1>Your Current Cycle Status</h1>
+
+<div class="day" id="cycleDay"></div>
+<div class="phase" id="phaseName"></div>
+<div class="description" id="phaseDesc"></div>
+<div class="advice" id="phaseAdvice"></div>
+
+<!-- Back Button -->
+<button class="back-btn" onclick="goBack()">⬅ Back to Hub</button>
+
+</div>
+
+<script>
+
+// Helper function to pick random advice
+function getRandomAdvice(list){
+    return list[Math.floor(Math.random() * list.length)];
+}
+
+// Calculate phase based on last period
+function calculatePhase(){
+
+    let storedDate = localStorage.getItem("lastPeriod");
+    let cycleLength = localStorage.getItem("cycleLength");
+
+    if(!storedDate || !cycleLength){
+        alert("Please enter period details first.");
+        window.location.href="period.html";
+        return;
+    }
+
+    let lastPeriod = new Date(storedDate);
+    let today = new Date();
+
+    let diffTime = today - lastPeriod;
+    let totalDays = Math.floor(diffTime / (1000*60*60*24));
+
+    let cycleDay = (totalDays % cycleLength) + 1;
+
+    let phase="";
+    let desc="";
+    let advice="";
+
+    let ovulationStart = Math.floor(cycleLength/2)-2;
+    let ovulationEnd = Math.floor(cycleLength/2)+2;
+
+    /* ---------------- MENSTRUAL ---------------- */
+    if(cycleDay <= 5){
+        phase="Menstrual Phase";
+        desc="This is your slow and soft phase. Your body is resting and resetting. You might feel low on energy or just want extra comfort. It’s completely okay to take things gently right now.";
+        let menstrualAdvice = [
+            "Wrap yourself in a blanket, drink something warm, and let the world wait. 💗",
+            "Cancel the drama. Light a candle, watch something cozy, and protect your peace.",
+            "Slow mornings. Soft music. Extra naps. Your only job today is to exist comfortably.",
+            "Hot shower, comfy clothes, zero pressure. Rest mode activated. ✨",
+            "Gentle stretches, warm food, and early sleep. Take care of your body."
+        ];
+        advice = getRandomAdvice(menstrualAdvice);
+    }
+
+    /* ---------------- FOLLICULAR ---------------- */
+    else if(cycleDay < ovulationStart){
+        phase="Follicular Phase";
+        desc="You’re slowly coming back to life. Energy is building and your mind feels clearer. This is the phase where new ideas feel exciting and fresh starts feel possible.";
+        let follicularAdvice = [
+            "Start that thing you’ve been postponing. Your brain is in main-character mode now.",
+            "Clean your space, plan your week, and glow up mentally. Soft reset energy. ✨",
+            "Try something new today — even something small. Your curiosity is your superpower.",
+            "Journal your ideas. You’re thinking sharper than you realize.",
+            "You’re building momentum. Keep going — future you will thank you."
+        ];
+        advice = getRandomAdvice(follicularAdvice);
+    }
+
+    /* ---------------- OVULATION ---------------- */
+    else if(cycleDay <= ovulationEnd){
+        phase="Ovulation Phase";
+        desc="This is your confident, magnetic phase. You may feel more social, expressive, and sure of yourself. People might notice your glow. It’s a powerful time to speak up, connect, and take bold steps.";
+        let ovulationAdvice = [
+            "Go slay diva. This is your spotlight moment. 💅✨",
+            "Schedule the big talk. Send the risky text. You’ve got the charm today.",
+            "Wear the outfit. Post the picture. Walk like you own the place.",
+            "Network. Socialize. Speak confidently. You’re glowing — use it.",
+            "High energy? Channel it into something bold. You are THAT girl today."
+        ];
+        advice = getRandomAdvice(ovulationAdvice);
+    }
+
+    /* ---------------- LUTEAL ---------------- */
+    else{
+        phase="Luteal Phase";
+        desc="You might feel more thoughtful, emotional, or easily drained now. That’s normal. Your energy is slowly winding down. This is a good time to reflect, organize your life, and protect your emotional space.";
+        let lutealAdvice = [
+            "Do the important tasks, but don’t overbook yourself. Protect your energy.",
+            "If you feel sensitive, that’s okay. Feel it — just don’t fight it.",
+            "Organize your space. Declutter your mind. Soft productivity mode on.",
+            "Say no without explaining too much. Peace over pressure.",
+            "Low energy? Work smart, not hard. Gentle queen era. 👑"
+        ];
+        advice = getRandomAdvice(lutealAdvice);
+    }
+
+    // Display results
+    document.getElementById("cycleDay").innerText = "Cycle Day: " + cycleDay;
+    document.getElementById("phaseName").innerText = phase;
+    document.getElementById("phaseDesc").innerText = desc;
+    document.getElementById("phaseAdvice").innerText = advice;
+
+    localStorage.setItem("currentPhase", phase);
+}
+
+// Go back to common.html
+function goBack() {
+    window.location.href = "common.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overall Evaluation</title>
+<style>
+body { font-family:'Segoe UI',sans-serif; background: linear-gradient(to bottom,#fff0f7,#ffe6f0); margin:0; padding:0; text-align:center; }
+header { padding:20px; background-color:#ffccd5; color:#4d0033; font-size:2em; font-weight:bold; }
+.evaluation-container { max-width:700px; margin:40px auto; background:white; padding:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); text-align:left; }
+h2 { color:#ff4d94; text-align:center; }
+.summary-item { margin-top:10px; padding:10px; background:#ffe6f0; border-radius:10px; }
+.rating { margin-top:15px; font-size:1.2em; font-weight:bold; color:#008000; text-align:center; }
+</style>
+</head>
+<body>
+<header>Overall Activity Evaluation</header>
+<div class="evaluation-container">
+<h2>App Evaluation Summary</h2>
+<div id="summary"></div>
+<div class="rating" id="rating"></div>
+</div>
+
+<script>
+function loadProgressAndRate() {
+    const summaryDiv = document.getElementById('summary');
+    summaryDiv.innerHTML = '';
+    
+    const pages = [
+        { key: 'journalCompleted', name: 'Journal Entries' },
+        { key: 'meditationCompleted', name: 'Meditation' },
+        { key: 'exerciseCompleted', name: 'Exercises' }
+    ];
+
+    let completedCount = 0;
+    let totalCount = pages.length;
+
+    pages.forEach(page => {
+        let completed = localStorage.getItem(page.key);
+        let displayText = '';
+
+        if (page.key === 'exerciseCompleted') {
+            let exercises = JSON.parse(completed || "[]");
+            displayText = exercises.length ? exercises.join(', ') : "None";
+            if (exercises.length > 0) completedCount++;
+        } else {
+            displayText = completed === 'true' ? "Completed ✅" : "Not completed ❌";
+            if (completed === 'true') completedCount++;
+        }
+
+        summaryDiv.innerHTML += `<div class="summary-item"><strong>${page.name}:</strong> ${displayText}</div>`;
+    });
+
+    // Calculate rating based on completion %
+    let percentage = Math.round((completedCount / totalCount) * 100);
+    let ratingText = '';
+    if (percentage <= 30) ratingText = "Needs Improvement ";
+    else if (percentage <= 60) ratingText = "Average ⚠️";
+    else if (percentage <= 90) ratingText = "Good 👍";
+    else ratingText = "Excellent ✅";
+
+    document.getElementById('rating').innerHTML = `Overall Score: ${percentage}% - ${ratingText}`;
+}
+
+// Run on page load
+loadProgressAndRate();
+</script>
+</body>
+</html>

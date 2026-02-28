@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile - Self Care Hub</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #ffe6f0;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+
+        input, textarea, select {
+            width: 90%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ff66a3;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff3385;
+        }
+    </style>
+
+    
+</head>
+
+<body>
+
+    <h1>🌸 Create Your Profile</h1>
+
+    <div class="box">
+        <input type="text" placeholder="Enter your Name">
+
+        <input type="number" placeholder="Enter your Age">
+
+        <textarea placeholder="What are your hobbies?"></textarea>
+
+        <input type="number" placeholder="Average Cycle Length (e.g. 28 days)">
+
+        <input type="number" placeholder="How many days does your period last?">
+
+        <input type="text" placeholder="Emergency Contact (mandatory)">
+         
+        <select>
+            <option>Select your goal</option>
+            <option>Improve Mood</option>
+            <option>Track Health</option>
+            <option>Reduce Stress</option>
+        </select>
+        <script>
+        function goToMood() {
+            window.location.href = "moods.html";
+        }
+        
+    </script>
+
+
+        <br><br>
+
+    
+        <button onclick="goToMood()">Save ➡️</button>
+    </div>
+
+</body>
+</html>

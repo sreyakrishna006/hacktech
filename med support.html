@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Medical Consultation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 400px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #00796b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #004d40;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Book Medical Consultation</h2>
+    <form id="consultationForm">
+      <input type="text" placeholder="Your Name" required>
+      <input type="number" placeholder="Your Age" required>
+      <select required>
+        <option value="">Select Doctor</option>
+        <option value="general">General Physician</option>
+        <option value="psychiatrist">Psychiatrist</option>
+        <option value="cardiologist">Cardiologist</option>
+        <option value="dermatologist">Dermatologist</option>
+        <option value="neurologist">Neurologist</option>
+        <option value="orthologist">Orthologist</option>
+      </select>
+      <textarea placeholder="Describe your symptoms" required></textarea>
+      <input type="datetime-local" required>
+      <button type="submit">Request Consultation</button>
+    </form>
+    <p id="message" style="color:green;"></p>
+  </div>
+
+  <script>
+    document.getElementById("consultationForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // Here you would send the data to your backend
+      document.getElementById("message").innerText = "Your consultation request has been submitted!";
+      this.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meditation Timer</title>
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        color: #fff;
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .buttons, .custom-timer, .controls, .audio-select, .playlist {
+        margin-bottom: 20px;
+    }
+
+    button, input[type="number"], select, input[type="file"] {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+    input[type="number"] {
+        width: 80px;
+        text-align: center;
+    }
+
+    .timer {
+        font-size: 60px;
+        margin-bottom: 30px;
+    }
+
+    .circle-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin-bottom: 20px;
+    }
+
+    .circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        opacity: 0.3;
+        animation: float 6s infinite ease-in-out;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .circle:nth-child(1) { width: 50px; height: 50px; animation-duration: 7s; }
+    .circle:nth-child(2) { width: 80px; height: 80px; animation-duration: 9s; }
+    .circle:nth-child(3) { width: 40px; height: 40px; animation-duration: 5s; }
+    .circle:nth-child(4) { width: 60px; height: 60px; animation-duration: 8s; }
+
+    @keyframes float {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+        50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.6; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    }
+</style>
+</head>
+<body>
+
+<h1>Meditation Timer</h1>
+
+<!-- Pre-set buttons -->
+<div class="buttons">
+    <button onclick="startTimer(5)">5 min</button>
+    <button onclick="startTimer(10)">10 min</button>
+    <button onclick="startTimer(15)">15 min</button>
+</div>
+
+<!-- Custom timer input -->
+<div class="custom-timer">
+    <input type="number" id="customMinutes" placeholder="Minutes" min="1">
+    <button onclick="startCustomTimer()">Start</button>
+</div>
+
+<div class="timer" id="timer">00:00</div>
+
+<!-- Floating circles animation -->
+<div class="circle-container">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+
+<!-- Timer controls -->
+<div class="controls">
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resumeTimer()">Resume</button>
+    <button onclick="resetTimer()">Reset</button>
+</div>
+
+<!-- Default meditation music select -->
+<div class="audio-select">
+    <label for="audio">Choose Meditation Music:</label>
+    <select id="audio" onchange="changeAudio()">
+        <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">Calm Piano</option>
+        <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">Nature Sounds</option>
+        <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3">Soft Ambient</option>
+    </select>
+</div>
+
+<!-- User playlist support -->
+<div class="playlist">
+    <label for="userAudio">Or select your own meditation music:</label>
+    <input type="file" id="userAudio" accept="audio/*" multiple onchange="loadUserPlaylist(event)">
+</div>
+
+<!-- Audio elements -->
+<audio id="meditationAudio" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let countdown;
+let remainingTime = 0;
+let isPaused = false;
+
+// User playlist variables
+let userPlaylist = [];
+let currentTrackIndex = 0;
+let userAudio = new Audio();
+
+// Timer functions
+function startTimer(minutes) {
+    remainingTime = minutes * 60;
+    startCountdown();
+    playAudio();
+}
+
+function startCustomTimer() {
+    const customMins = parseInt(document.getElementById('customMinutes').value);
+    if (isNaN(customMins) || customMins <= 0) {
+        alert("Enter a valid number of minutes.");
+        return;
+    }
+    remainingTime = customMins * 60;
+    startCountdown();
+    playAudio();
+}
+
+function startCountdown() {
+    clearInterval(countdown);
+    isPaused = false;
+
+    function updateTimer() {
+        const mins = Math.floor(remainingTime / 60);
+        const secs = remainingTime % 60;
+        document.getElementById('timer').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        if (remainingTime <= 0) {
+            clearInterval(countdown);
+            pauseAudio();
+            alert("✨ Meditation Complete! ✨");
+        }
+        if (!isPaused) remainingTime--;
+    }
+
+    updateTimer();
+    countdown = setInterval(updateTimer, 1000);
+}
+
+// Controls
+function pauseTimer() {
+    isPaused = true;
+    pauseAudio();
+}
+
+function resumeTimer() {
+    if (remainingTime <= 0) return;
+    isPaused = false;
+    playAudio();
+}
+
+function resetTimer() {
+    clearInterval(countdown);
+    remainingTime = 0;
+    isPaused = false;
+    document.getElementById('timer').textContent = "00:00";
+    pauseAudio();
+}
+
+// Audio functions
+function playAudio() {
+    if (userPlaylist.length > 0) {
+        playUserTrack(currentTrackIndex);
+    } else {
+        document.getElementById('meditationAudio').play();
+    }
+}
+
+function pauseAudio() {
+    if (userPlaylist.length > 0) {
+        userAudio.pause();
+    } else {
+        const audio = document.getElementById('meditationAudio');
+        audio.pause();
+        audio.currentTime = 0;
+    }
+}
+
+// Default audio selection
+function changeAudio() {
+    const select = document.getElementById('audio');
+    const audio = document.getElementById('meditationAudio');
+    audio.src = select.value;
+    if (!isPaused && remainingTime > 0) audio.play();
+}
+
+// User playlist functions
+function loadUserPlaylist(event) {
+    userPlaylist = Array.from(event.target.files);
+    currentTrackIndex = 0;
+    if(userPlaylist.length > 0) {
+        playUserTrack(currentTrackIndex);
+    }
+}
+
+function playUserTrack(index) {
+    if(index >= userPlaylist.length) {
+        index = 0; 
+        currentTrackIndex = 0;
+    }
+    const track = userPlaylist[index];
+    const url = URL.createObjectURL(track);
+    userAudio.src = url;
+    userAudio.play();
+    userAudio.onended = () => {
+        currentTrackIndex++;
+        playUserTrack(currentTrackIndex);
+    };
+}
+</script>
+
+</body>
+</html>

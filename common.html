@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Self Care Hub</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #ffe0f0, #fff0f7);
+            text-align: center;
+            margin: 0;
+        }
+
+        .logo {
+            font-size: 70px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            margin-top: 10px;
+            color: #444;
+        }
+
+        .container {
+            margin: 50px auto;
+            width: 80%;
+            max-width: 700px;
+
+            /* GRID FOR 3 PER ROW */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .feature-btn {
+            padding: 25px 10px;
+            font-size: 16px;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .feature-btn:hover {
+            transform: scale(1.07);
+            background-color: #ff85b3;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="logo">🌸💗</div>
+    <h1>Self Care Hub</h1>
+
+    <div class="container">
+        <button class="feature-btn" onclick="openPage('phasedetails.html')">
+            1️⃣ <br> Period Tracker
+        </button>
+
+        <button class="feature-btn" onclick="openPage('journal.html')">
+            2️⃣ <br> Journal Writing
+        </button>
+
+
+        <button class="feature-btn" onclick="openPage('meditation.html')">
+            3️⃣ <br> Meditation zone
+        </button>
+
+        <button class="feature-btn" onclick="openPage('exercise.html')">
+            4️⃣ <br> Exercise Library
+        </button>
+
+        <button class="feature-btn" onclick="openPage('med support.html')">
+           5️⃣ <br> medsupport
+        </button>
+         <button class="feature-btn" onclick="openPage('evaluation.html')">
+             6️⃣ <br> Evaluation
+        </button>
+
+    </div>
+
+<script>
+    function openPage(page) {
+        window.location.href = page;
+    }
+    function goBack() {
+    window.location.href = "moods.html";
+}
+</script>
+
+</body>
+</html>

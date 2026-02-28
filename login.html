@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Health Companion - Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #ffd6e8, #ffeaf4);
+            text-align: center;
+            margin: 0;
+        }
+
+        h2 {
+            margin-top: 60px;
+            color: #444;
+        }
+
+        .card {
+            background: white;
+            width: 350px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding: 12px;
+            margin: 8px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            width: 80%;
+        }
+
+        button {
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: #ff85b3;
+            color: white;
+            cursor: pointer;
+            margin: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #authMessage {
+            color: red;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Welcome 💗</h2>
+
+    <input type="text" id="username" placeholder="Username" autocomplete="off"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+
+    <p id="authMessage"></p>
+</div>
+
+<script>
+// Enter key navigation
+document.getElementById("username").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault(); 
+        document.getElementById("password").focus();
+    }
+});
+
+document.getElementById("password").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault(); 
+        login(); 
+    }
+});
+
+// Password validation function
+function isValidPassword(password) {
+    const minLength = 6;
+    const hasNumber = /\d/;
+    return password.length >= minLength && hasNumber.test(password);
+}
+
+// Signup function
+function signup() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (!user || !pass) {
+        alert("All fields are required!");
+        return;
+    }
+
+    if (!isValidPassword(pass)) {
+        alert("Password must be at least 6 characters long and include at least one number!");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    if (users[user]) {
+        alert("User already exists!");
+        return;
+    }
+
+    users[user] = pass;
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // Set first-time signup flag
+    localStorage.setItem("firstSignup", "true");
+
+    alert("Signup successful! Please login.");
+}
+
+// Login function
+function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (!user || !pass) {
+        alert("All fields are required!");
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+    if (users[user] === pass) {
+        localStorage.setItem("loggedUser", user);
+
+        // Check if first-time signup
+        if (localStorage.getItem("firstSignup") === "true") {
+            // Clear firstSignup flag after redirect
+            localStorage.removeItem("firstSignup");
+            window.location.href = "details.html"; // first-time user goes to moods
+        } else {
+            window.location.href = "moods.html"; // regular login goes to details
+        }
+
+    } else {
+        alert("Invalid username or password!");
+    }
+}
+
+// Auto-check if signup is done
+window.onload = () => {
+    if (!localStorage.getItem("users")) {
+        document.getElementById("authMessage").innerText = "Please sign up first!";
+    }
+};
+</script>
+
+</body>
+</html>
